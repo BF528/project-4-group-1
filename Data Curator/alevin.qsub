@@ -1,0 +1,21 @@
+#!/bin/bash -l
+
+#$ -P bf528
+#$ -cwd
+#$ -j y
+#$ -pe mpi_16_tasks_per_node 16
+
+echo "Running job $JOB_ID"
+echo "Started: $(date +%F)"
+echo "Running in directory: $PWD"
+
+samplepath="/projectnb/bf528/project_4_scrnaseq/fastq"
+dirpath="/projectnb2/bf528/users/group1/project4_data/"
+salmonpath="/salmon-latest_linux_x86_64/bin/salmon"
+
+.$salmonpath alevin -l ISR -1 $samplepath/SRR3879604/SRR3879604_1_bc.fastq.gz -2 $samplepath/SRR3879604/SRR3879604_2.fastq.gz -i $dirpath/index -o $dirpath/SRR387604_salmon --tgMap $dirpath/transcriptmap.tsv --whitelist $dirpath/SRR3879604_whitelist.txt --end 5 --barcodeLength 19 --umiLength 6
+
+.$salmonpath alevin -l ISR -1 $samplepath/SRR3879605/SRR3879605_1_bc.fastq.gz -2 $samplepath/SRR3879605/SRR3879605_2.fastq.gz -i $dirpath/index -o $dirpath/SRR387605_salmon --tgMap $dirpath/transcriptmap.tsv --whitelist $dirpath/SRR3879605_whitelist.txt --end 5 --barcodeLength 19 --umiLength 6
+
+.$salmonpath alevin -l ISR -1 $samplepath/SRR3879606/SRR3879606_1_bc.fastq.gz -2 $samplepath/SRR3879606/SRR3879606_2.fastq.gz -i $dirpath/index -o $dirpath/SRR387606_salmon --tgMap $dirpath/transcriptmap.tsv --whitelist $dirpath/SRR3879606_whitelist.txt --end 5 --barcodeLength 19 --umiLength 6
+

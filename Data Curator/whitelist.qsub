@@ -1,0 +1,61 @@
+#!/bin/bash -l
+
+#$ -P bf528
+#$ -cwd
+#$ -j y
+#$ -pe mpi_16_tasks_per_node 16
+
+echo "Running job $JOB_ID"
+echo "Started: $(date +%F)"
+echo "Running in directory: $PWD"
+
+samplepath="/projectnb/bf528/project_4_scrnaseq/fastq"
+cwd="/projectnb/bf528/users/group1/project4_data"
+
+run1="SRR3879604"
+run2="SRR3879605"
+run3="SRR3879606"
+
+#run1
+
+zcat $samplepath/SRR3879604/SRR3879604_1_bc.fastq.gz | awk '{if(NR%4==2){print substr($1,1,19) "\t" substr($1,20,6) }}'| cut -f 1 | sort | uniq -c > $cwd/${run1}_barcodes_freq.txt
+
+cat $cwd/${run1}_barcodes_freq.txt|awk '{print $1}' | sort -n | uniq -c | awk '{print $2 "\t" $1}' | awk '{sum=sum+$2; print $0 "\t" sum}' > $cwd/${run1}_cdf.txt
+
+stddev=$(awk '{delta = $1 - avg; avg += delta / NR; mean2 += delta * ($1 - avg); } END { print sqrt(mean2 / NR)}' $cwd/${run1}_cdf.txt)
+avg=$(awk '{sum=sum+$1}END {print sum/NR}' $cwd/${run1}_cdf.txt)
+
+echo $avg $stddev
+
+awk -v stddev=$stddev -v avg=$avg '{if($1 > avg ){print $1}}' $cwd/${run1}_cdf.txt > $cwd/${run1}_freq_list.txt 
+
+awk 'NR==FNR{F1[$0];next}$1 in F1{print $2}' $cwd/${run1}_freq_list.txt $cwd/${run1}_barcodes_freq.txt > $cwd/${run1}_whitelist.txt
+
+
+#run2
+
+zcat $samplepath/SRR3879605/SRR3879605_1_bc.fastq.gz | awk '{if(NR%4==2){print substr($1,1,19) "\t" substr($1,20,6) }}'| cut -f 1 | sort | uniq -c > $cwd/${run2}_barcodes_freq.txt
+
+cat $cwd/${run2}_barcodes_freq.txt|awk '{print $1}' | sort -n | uniq -c | awk '{print $2 "\t" $1}' | awk '{sum=sum+$2; print $0 "\t" sum}' > $cwd/${run2}_cdf.txt
+
+stddev=$(awk '{delta = $1 - avg; avg += delta / NR; mean2 += delta * ($1 - avg); } END { print sqrt(mean2 / NR)}' $cwd/${run2}_cdf.txt)
+avg=$(awk '{sum=sum+$1}END {print sum/NR}' $cwd/${run2}_cdf.txt)
+
+echo $avg $stddev
+
+awk -v stddev=$stddev -v avg=$avg '{if($1 > avg ){print $1}}' $cwd/${run2}_cdf.txt > $cwd/${run2}_freq_list.txt 
+awk 'NR==FNR{F1[$0];next}$1 in F1{print $2}' $cwd/${run2}_freq_list.txt $cwd/${run2}_barcodes_freq.txt > $cwd/${run2}_whitelist.txt
+
+#run3
+
+zcat $samplepath/SRR3879606/SRR3879606_1_bc.fastq.gz | awk '{if(NR%4==2){print substr($1,1,19) "\t" substr($1,20,6) }}'| cut -f 1 | sort | uniq -c > $cwd/${run3}_barcodes_freq.txt
+
+cat $cwd/${run3}_barcodes_freq.txt|awk '{print $1}' | sort -n | uniq -c | awk '{print $2 "\t" $1}' | awk '{sum=sum+$2; print $0 "\t" sum}' > $cwd/${run3}_cdf.txt
+
+stddev=$(awk '{delta = $1 - avg; avg += delta / NR; mean2 += delta * ($1 - avg); } END { print sqrt(mean2 / NR)}' $cwd/${run3}_cdf.txt)
+avg=$(awk '{sum=sum+$1}END {print sum/NR}' $cwd/${run3}_cdf.txt)
+
+echo $avg $stddev
+
+awk -v stddev=$stddev -v avg=$avg '{if($1 > avg ){print $1}}' $cwd/${run3}_cdf.txt > $cwd/${run3}_freq_list.txt 
+awk 'NR==FNR{F1[$0];next}$1 in F1{print $2}' $cwd/${run3}_freq_list.txt $cwd/${run3}_barcodes_freq.txt > $cwd/${run3}_whitelist.txt
