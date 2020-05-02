@@ -1,11 +1,10 @@
 # Project Description
 
-A brief description of what this repository is for and what it contains
+This repository contains files related to the project "Single Cell RNA-Seq Analysis of Pancreatic Cells" (https://bf528.readthedocs.io/en/latest/content/projects/project_4_scrnaseq/project_4_scrnaseq.html)
 
 # Contributors
 
-List contributor names and github user names, or email addresses if desired
+Divya (Data Curator), Garima (Biologist), Marlene (Analyst), Xudong (Programmer)
 
 # Repository Contents
 
-Provide a brief description of each script/code file in this repo, what it does, and how to execute it
